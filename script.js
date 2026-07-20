@@ -3,7 +3,6 @@ const resetButton = document.querySelector("#resetButton");
 const revealButton = document.querySelector("#revealButton");
 const targetControls = document.querySelector("#targetControls");
 const targetAdjustButtons = document.querySelectorAll(".target-adjust");
-const targetMinutesDisplay = document.querySelector("#targetMinutes");
 const targetSecondsDisplay = document.querySelector("#targetSeconds");
 const targetHundredthsDisplay = document.querySelector("#targetHundredths");
 const revealPanel = document.querySelector("#revealPanel");
@@ -12,7 +11,6 @@ const targetDisplay = document.querySelector("#targetDisplay");
 const deltaDisplay = document.querySelector("#deltaDisplay");
 
 const targetTime = {
-  minutes: 0,
   seconds: 0,
   hundredths: 0,
 };
@@ -35,20 +33,16 @@ function formatTime(milliseconds) {
   const totalHundredths = Math.floor(milliseconds / 10);
   const hundredths = totalHundredths % 100;
   const totalSeconds = Math.floor(totalHundredths / 100);
-  const seconds = totalSeconds % 60;
-  const minutes = Math.floor(totalSeconds / 60);
 
-  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(hundredths).padStart(2, "0")}`;
+  return `${String(totalSeconds).padStart(2, "0")}.${String(hundredths).padStart(2, "0")}`;
 }
 
 function formatTimeOff(milliseconds) {
   const totalHundredths = Math.floor(milliseconds / 10);
   const hundredths = totalHundredths % 100;
   const totalSeconds = Math.floor(totalHundredths / 100);
-  const seconds = totalSeconds % 60;
-  const minutes = Math.floor(totalSeconds / 60);
 
-  return `${minutes}:${String(seconds).padStart(2, "0")}.${String(hundredths).padStart(2, "0")}`;
+  return `${totalSeconds}.${String(hundredths).padStart(2, "0")}`;
 }
 
 function clamp(value, minimum, maximum) {
@@ -56,23 +50,16 @@ function clamp(value, minimum, maximum) {
 }
 
 function getTargetTime() {
-  return (
-    targetTime.minutes * 60 * 1000 +
-    targetTime.seconds * 1000 +
-    targetTime.hundredths * 10
-  );
+  return targetTime.seconds * 1000 + targetTime.hundredths * 10;
 }
 
 function renderTargetControls() {
-  targetMinutesDisplay.textContent = String(targetTime.minutes).padStart(2, "0");
   targetSecondsDisplay.textContent = String(targetTime.seconds).padStart(2, "0");
   targetHundredthsDisplay.textContent = String(targetTime.hundredths).padStart(2, "0");
 }
 
 function adjustTargetTime(unit, change) {
-  if (unit === "minutes") {
-    targetTime.minutes = clamp(targetTime.minutes + change, 0, 99);
-  } else if (unit === "seconds") {
+  if (unit === "seconds") {
     targetTime.seconds = clamp(targetTime.seconds + change, 0, 59);
   } else if (unit === "hundredths") {
     targetTime.hundredths = clamp(targetTime.hundredths + change, 0, 99);

@@ -12,15 +12,6 @@
         <div class="target-label">TARGET</div>
         <div class="target-picker" aria-label="Target time">
           <div class="target-unit">
-            <button class="target-adjust" type="button" data-target-unit="minutes" data-change="1" aria-label="Add one minute">+</button>
-            <div id="targetMinutes" class="target-value">00</div>
-            <button class="target-adjust" type="button" data-target-unit="minutes" data-change="-1" aria-label="Remove one minute">-</button>
-            <div class="target-unit-label">MIN</div>
-          </div>
-
-          <div class="target-separator">:</div>
-
-          <div class="target-unit">
             <button class="target-adjust" type="button" data-target-unit="seconds" data-change="1" aria-label="Add one second">+</button>
             <div id="targetSeconds" class="target-value">00</div>
             <button class="target-adjust" type="button" data-target-unit="seconds" data-change="-1" aria-label="Remove one second">-</button>
@@ -44,10 +35,10 @@
 
       <div id="revealPanel" class="reveal-panel" hidden>
         <div class="target-readout">
-          TARGET <span id="targetDisplay">--:--.--</span>
+          TARGET <span id="targetDisplay">00.00</span>
         </div>
-        <div id="secretTimer" class="secret-timer">00:00.00</div>
-        <div id="deltaDisplay" class="delta-display">0:00.00</div>
+        <div id="secretTimer" class="secret-timer">00.00</div>
+        <div id="deltaDisplay" class="delta-display">0.00</div>
       </div>
     </main>
 
