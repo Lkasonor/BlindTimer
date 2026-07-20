@@ -41,10 +41,14 @@ function formatTime(milliseconds) {
   return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(hundredths).padStart(2, "0")}`;
 }
 
-function formatDelta(milliseconds) {
-  const sign = milliseconds < 0 ? "-" : "+";
+function formatTimeOff(milliseconds) {
+  const totalHundredths = Math.floor(milliseconds / 10);
+  const hundredths = totalHundredths % 100;
+  const totalSeconds = Math.floor(totalHundredths / 100);
+  const seconds = totalSeconds % 60;
+  const minutes = Math.floor(totalSeconds / 60);
 
-  return `${sign}${formatTime(Math.abs(milliseconds))}`;
+  return `${minutes}:${String(seconds).padStart(2, "0")}.${String(hundredths).padStart(2, "0")}`;
 }
 
 function clamp(value, minimum, maximum) {
@@ -86,12 +90,9 @@ function renderTimer() {
   targetDisplay.textContent = formatTime(selectedTargetTime);
   deltaDisplay.classList.remove("is-over", "is-under");
 
-  const delta = elapsedTime - selectedTargetTime;
-  deltaDisplay.textContent = `DELTA ${formatDelta(delta)}`;
-
-  if (delta !== 0) {
-    deltaDisplay.classList.add(delta > 0 ? "is-over" : "is-under");
-  }
+  const timeOff = Math.abs(elapsedTime - selectedTargetTime);
+  deltaDisplay.textContent = `${formatTimeOff(timeOff)} OFF`;
+  deltaDisplay.classList.add(timeOff < 1000 ? "is-under" : "is-over");
 }
 
 function tick() {
