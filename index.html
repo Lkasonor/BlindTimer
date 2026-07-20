@@ -9,15 +9,33 @@
   <body>
     <main class="timer-app" aria-live="polite">
       <div id="targetControls" class="target-controls">
-        <label for="targetInput">TARGET</label>
-        <input
-          id="targetInput"
-          class="target-input"
-          type="text"
-          inputmode="decimal"
-          autocomplete="off"
-          placeholder="01:30.00"
-        >
+        <div class="target-label">TARGET</div>
+        <div class="target-picker" aria-label="Target time">
+          <div class="target-unit">
+            <button class="target-adjust" type="button" data-target-unit="minutes" data-change="1" aria-label="Add one minute">+</button>
+            <div id="targetMinutes" class="target-value">00</div>
+            <button class="target-adjust" type="button" data-target-unit="minutes" data-change="-1" aria-label="Remove one minute">-</button>
+            <div class="target-unit-label">MIN</div>
+          </div>
+
+          <div class="target-separator">:</div>
+
+          <div class="target-unit">
+            <button class="target-adjust" type="button" data-target-unit="seconds" data-change="1" aria-label="Add one second">+</button>
+            <div id="targetSeconds" class="target-value">00</div>
+            <button class="target-adjust" type="button" data-target-unit="seconds" data-change="-1" aria-label="Remove one second">-</button>
+            <div class="target-unit-label">SEC</div>
+          </div>
+
+          <div class="target-separator">.</div>
+
+          <div class="target-unit">
+            <button class="target-adjust" type="button" data-target-unit="hundredths" data-change="1" aria-label="Add one hundredth">+</button>
+            <div id="targetHundredths" class="target-value">00</div>
+            <button class="target-adjust" type="button" data-target-unit="hundredths" data-change="-1" aria-label="Remove one hundredth">-</button>
+            <div class="target-unit-label">MS</div>
+          </div>
+        </div>
       </div>
 
       <button id="startStopButton" class="primary-button" type="button">

@@ -2,11 +2,20 @@ const startStopButton = document.querySelector("#startStopButton");
 const resetButton = document.querySelector("#resetButton");
 const revealButton = document.querySelector("#revealButton");
 const targetControls = document.querySelector("#targetControls");
-const targetInput = document.querySelector("#targetInput");
+const targetAdjustButtons = document.querySelectorAll(".target-adjust");
+const targetMinutesDisplay = document.querySelector("#targetMinutes");
+const targetSecondsDisplay = document.querySelector("#targetSeconds");
+const targetHundredthsDisplay = document.querySelector("#targetHundredths");
 const revealPanel = document.querySelector("#revealPanel");
 const secretTimer = document.querySelector("#secretTimer");
 const targetDisplay = document.querySelector("#targetDisplay");
 const deltaDisplay = document.querySelector("#deltaDisplay");
+
+const targetTime = {
+  minutes: 0,
+  seconds: 0,
+  hundredths: 0,
+};
 
 let elapsedBeforeStart = 0;
 let startedAt = 0;
@@ -32,60 +41,57 @@ function formatTime(milliseconds) {
   return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(hundredths).padStart(2, "0")}`;
 }
 
-function parseTargetTime(value) {
-  const trimmedValue = value.trim();
-
-  if (trimmedValue === "") {
-    return null;
-  }
-
-  const parts = trimmedValue.split(":");
-
-  if (parts.length > 3) {
-    return null;
-  }
-
-  const numbers = parts.map((part) => Number(part));
-
-  if (numbers.some((number) => !Number.isFinite(number) || number < 0)) {
-    return null;
-  }
-
-  let totalSeconds = 0;
-
-  if (numbers.length === 1) {
-    totalSeconds = numbers[0];
-  } else if (numbers.length === 2) {
-    totalSeconds = numbers[0] * 60 + numbers[1];
-  } else {
-    totalSeconds = numbers[0] * 3600 + numbers[1] * 60 + numbers[2];
-  }
-
-  return Math.round(totalSeconds * 1000);
-}
-
 function formatDelta(milliseconds) {
   const sign = milliseconds < 0 ? "-" : "+";
 
   return `${sign}${formatTime(Math.abs(milliseconds))}`;
 }
 
-function renderTimer() {
-  const elapsedTime = getElapsedTime();
-  const targetTime = parseTargetTime(targetInput.value);
+function clamp(value, minimum, maximum) {
+  return Math.min(Math.max(value, minimum), maximum);
+}
 
-  secretTimer.textContent = formatTime(elapsedTime);
-  targetDisplay.textContent = targetTime === null ? "--:--.--" : formatTime(targetTime);
-  deltaDisplay.classList.remove("is-over", "is-under");
+function getTargetTime() {
+  return (
+    targetTime.minutes * 60 * 1000 +
+    targetTime.seconds * 1000 +
+    targetTime.hundredths * 10
+  );
+}
 
-  if (targetTime === null) {
-    deltaDisplay.textContent = "DELTA --:--.--";
-    return;
+function renderTargetControls() {
+  targetMinutesDisplay.textContent = String(targetTime.minutes).padStart(2, "0");
+  targetSecondsDisplay.textContent = String(targetTime.seconds).padStart(2, "0");
+  targetHundredthsDisplay.textContent = String(targetTime.hundredths).padStart(2, "0");
+}
+
+function adjustTargetTime(unit, change) {
+  if (unit === "minutes") {
+    targetTime.minutes = clamp(targetTime.minutes + change, 0, 99);
+  } else if (unit === "seconds") {
+    targetTime.seconds = clamp(targetTime.seconds + change, 0, 59);
+  } else if (unit === "hundredths") {
+    targetTime.hundredths = clamp(targetTime.hundredths + change, 0, 99);
   }
 
-  const delta = elapsedTime - targetTime;
+  renderTargetControls();
+  renderTimer();
+}
+
+function renderTimer() {
+  const elapsedTime = getElapsedTime();
+  const selectedTargetTime = getTargetTime();
+
+  secretTimer.textContent = formatTime(elapsedTime);
+  targetDisplay.textContent = formatTime(selectedTargetTime);
+  deltaDisplay.classList.remove("is-over", "is-under");
+
+  const delta = elapsedTime - selectedTargetTime;
   deltaDisplay.textContent = `DELTA ${formatDelta(delta)}`;
-  deltaDisplay.classList.add(delta > 0 ? "is-over" : "is-under");
+
+  if (delta !== 0) {
+    deltaDisplay.classList.add(delta > 0 ? "is-over" : "is-under");
+  }
 }
 
 function tick() {
@@ -151,8 +157,15 @@ startStopButton.addEventListener("click", () => {
 
 resetButton.addEventListener("click", resetTimer);
 
+targetAdjustButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    adjustTargetTime(button.dataset.targetUnit, Number(button.dataset.change));
+  });
+});
+
 revealButton.addEventListener("click", () => {
   setRevealMode(!isRevealed);
 });
 
+renderTargetControls();
 renderTimer();
