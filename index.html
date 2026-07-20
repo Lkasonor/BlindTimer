@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Blind Timer</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="timer-app" aria-live="polite">
+      <button id="startStopButton" class="primary-button" type="button">
+        Start
+      </button>
+
+      <div id="secretTimer" class="secret-timer" hidden>00:00.0</div>
+    </main>
+
+    <button id="resetButton" class="corner-button reset-button" type="button">
+      Reset
+    </button>
+
+    <button id="revealButton" class="corner-button reveal-button" type="button">
+      Reveal
+    </button>
+
+    <script src="script.js"></script>
+  </body>
+</html>
