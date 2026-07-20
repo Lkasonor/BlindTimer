@@ -13,7 +13,7 @@
         <div class="target-picker" aria-label="Target time">
           <div class="target-unit">
             <button class="target-adjust" type="button" data-target-unit="seconds" data-change="1" aria-label="Add one second">+</button>
-            <div id="targetSeconds" class="target-value">00</div>
+            <input id="targetSeconds" class="target-value" type="text" inputmode="numeric" data-target-unit="seconds" value="00" aria-label="Target seconds">
             <button class="target-adjust" type="button" data-target-unit="seconds" data-change="-1" aria-label="Remove one second">-</button>
             <div class="target-unit-label">SEC</div>
           </div>
@@ -22,7 +22,7 @@
 
           <div class="target-unit">
             <button class="target-adjust" type="button" data-target-unit="hundredths" data-change="1" aria-label="Add one hundredth">+</button>
-            <div id="targetHundredths" class="target-value">00</div>
+            <input id="targetHundredths" class="target-value" type="text" inputmode="numeric" data-target-unit="hundredths" value="00" aria-label="Target milliseconds">
             <button class="target-adjust" type="button" data-target-unit="hundredths" data-change="-1" aria-label="Remove one hundredth">-</button>
             <div class="target-unit-label">MS</div>
           </div>

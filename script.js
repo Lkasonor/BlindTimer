@@ -3,8 +3,9 @@ const resetButton = document.querySelector("#resetButton");
 const revealButton = document.querySelector("#revealButton");
 const targetControls = document.querySelector("#targetControls");
 const targetAdjustButtons = document.querySelectorAll(".target-adjust");
-const targetSecondsDisplay = document.querySelector("#targetSeconds");
-const targetHundredthsDisplay = document.querySelector("#targetHundredths");
+const targetValueInputs = document.querySelectorAll(".target-value");
+const targetSecondsInput = document.querySelector("#targetSeconds");
+const targetHundredthsInput = document.querySelector("#targetHundredths");
 const revealPanel = document.querySelector("#revealPanel");
 const secretTimer = document.querySelector("#secretTimer");
 const targetDisplay = document.querySelector("#targetDisplay");
@@ -49,23 +50,50 @@ function clamp(value, minimum, maximum) {
   return Math.min(Math.max(value, minimum), maximum);
 }
 
+function wrap(value, minimum, maximum) {
+  if (value < minimum) {
+    return maximum;
+  }
+
+  if (value > maximum) {
+    return minimum;
+  }
+
+  return value;
+}
+
 function getTargetTime() {
   return targetTime.seconds * 1000 + targetTime.hundredths * 10;
 }
 
 function renderTargetControls() {
-  targetSecondsDisplay.textContent = String(targetTime.seconds).padStart(2, "0");
-  targetHundredthsDisplay.textContent = String(targetTime.hundredths).padStart(2, "0");
+  targetSecondsInput.value = String(targetTime.seconds).padStart(2, "0");
+  targetHundredthsInput.value = String(targetTime.hundredths).padStart(2, "0");
 }
 
 function adjustTargetTime(unit, change) {
   if (unit === "seconds") {
-    targetTime.seconds = clamp(targetTime.seconds + change, 0, 59);
+    targetTime.seconds = wrap(targetTime.seconds + change, 0, 60);
   } else if (unit === "hundredths") {
-    targetTime.hundredths = clamp(targetTime.hundredths + change, 0, 99);
+    targetTime.hundredths = wrap(targetTime.hundredths + change, 0, 99);
   }
 
   renderTargetControls();
+  renderTimer();
+}
+
+function updateTargetFromInput(input) {
+  const unit = input.dataset.targetUnit;
+  const maximum = unit === "seconds" ? 60 : 99;
+  const cleanValue = input.value.replace(/\D/g, "").slice(0, 2);
+
+  input.value = cleanValue;
+  targetTime[unit] = cleanValue === "" ? 0 : clamp(Number(cleanValue), 0, maximum);
+
+  if (cleanValue !== "" && Number(cleanValue) > maximum) {
+    input.value = String(maximum);
+  }
+
   renderTimer();
 }
 
@@ -115,6 +143,9 @@ function stopTimer() {
 function resetTimer() {
   elapsedBeforeStart = 0;
   startedAt = isRunning ? Date.now() : 0;
+  targetTime.seconds = 0;
+  targetTime.hundredths = 0;
+  renderTargetControls();
   renderTimer();
 }
 
@@ -149,6 +180,18 @@ targetAdjustButtons.forEach((button) => {
   button.addEventListener("click", () => {
     adjustTargetTime(button.dataset.targetUnit, Number(button.dataset.change));
   });
+});
+
+targetValueInputs.forEach((input) => {
+  input.addEventListener("focus", () => {
+    input.select();
+  });
+
+  input.addEventListener("input", () => {
+    updateTargetFromInput(input);
+  });
+
+  input.addEventListener("blur", renderTargetControls);
 });
 
 revealButton.addEventListener("click", () => {
