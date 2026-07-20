@@ -143,9 +143,6 @@ function stopTimer() {
 function resetTimer() {
   elapsedBeforeStart = 0;
   startedAt = isRunning ? Date.now() : 0;
-  targetTime.seconds = 0;
-  targetTime.hundredths = 0;
-  renderTargetControls();
   renderTimer();
 }
 
