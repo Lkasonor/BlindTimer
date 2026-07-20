@@ -42,7 +42,7 @@ function tick() {
 function startTimer() {
   startedAt = Date.now();
   isRunning = true;
-  startStopButton.textContent = "Stop";
+  startStopButton.textContent = "STOP";
   startStopButton.classList.add("is-running");
   tick();
 }
@@ -50,7 +50,7 @@ function startTimer() {
 function stopTimer() {
   elapsedBeforeStart = getElapsedTime();
   isRunning = false;
-  startStopButton.textContent = "Start";
+  startStopButton.textContent = "START";
   startStopButton.classList.remove("is-running");
 
   if (animationFrameId !== null) {
