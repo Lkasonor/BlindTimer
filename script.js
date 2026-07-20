@@ -91,7 +91,7 @@ function renderTimer() {
   deltaDisplay.classList.remove("is-over", "is-under");
 
   const timeOff = Math.abs(elapsedTime - selectedTargetTime);
-  deltaDisplay.textContent = `${formatTimeOff(timeOff)} OFF`;
+  deltaDisplay.textContent = formatTimeOff(timeOff);
   deltaDisplay.classList.add(timeOff < 1000 ? "is-under" : "is-over");
 }
 
